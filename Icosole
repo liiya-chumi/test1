@@ -1,0 +1,243 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// ==================== INTERFACE ====================
+interface IConsoles {
+    String getConsoleType();
+    String getStore();
+    double getTotal();
+}
+
+// ==================== BASE CLASS ====================
+abstract class Console implements IConsoles {
+
+    protected String consoleType;   // e.g. PS5, Xbox, Nintendo Switch
+    protected String storeName;     // Store name
+    protected String city;          // City where the store is located
+    protected double totalSales;    // Total sales amount
+
+    // Constructor that accepts the console type (plus store details)
+    public Console(String consoleType, String storeName, String city, double totalSales) {
+        this.consoleType = consoleType;
+        this.storeName  = storeName;
+        this.city       = city;
+        this.totalSales = totalSales;
+    }
+
+    // Interface implementations
+    @Override public String getConsoleType() { return consoleType; }
+    @Override public String getStore()       { return storeName; }
+    @Override public double getTotal()       { return totalSales; }
+
+    public String getCity() { return city; }
+
+    // -------- PRINT REPORT METHOD --------
+    public void printReport() {
+        System.out.printf("%-22s %-20s %-18s R%,.2f%n",
+                consoleType, storeName, city, totalSales);
+    }
+}
+
+// ==================== SUBCLASS: Consoles ====================
+class Consoles extends Console {
+
+    // Constructor passes console type up to the parent Console class
+    public Consoles(String consoleType, String storeName, String city, double totalSales) {
+        super(consoleType, storeName, city, totalSales);
+    }
+}
+
+// ==================== MAIN APPLICATION ====================
+public class ConsoleSalesCityReport {
+
+    static ArrayList<Console> records = new ArrayList<>();
+    static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+
+        do {
+            printMenu();
+            choice = readInt("Enter your choice: ");
+
+            switch (choice) {
+                case 1 -> addSale();
+                case 2 -> printFullReport();
+                case 3 -> printCityTotals();
+                case 4 -> printConsoleTotals();
+                case 5 -> System.out.println("\nGoodbye!");
+                default -> System.out.println("Invalid option. Choose 1-5.\n");
+            }
+        } while (choice != 5);
+
+        scanner.close();
+    }
+
+    // ==================== MENU ====================
+    static void printMenu() {
+        System.out.println("\n==============================================");
+        System.out.println("     CONSOLE DEVICE SALES APPLICATION");
+        System.out.println("==============================================");
+        System.out.println(" 1. Add Console Sale");
+        System.out.println(" 2. Print Full Sales Report");
+        System.out.println(" 3. Show Totals per City");
+        System.out.println(" 4. Show Totals per Console Device");
+        System.out.println(" 5. Exit");
+        System.out.println("==============================================");
+    }
+
+    // ==================== ADD SALE ====================
+    static void addSale() {
+        System.out.println("\n--- Select Console Device ---");
+        System.out.println(" 1. PlayStation 5 (PS5)");
+        System.out.println(" 2. Xbox Series X");
+        System.out.println(" 3. Nintendo Switch");
+        int type = readInt("Enter console type (1-3): ");
+
+        String consoleType = switch (type) {
+            case 1 -> "PlayStation 5 (PS5)";
+            case 2 -> "Xbox Series X";
+            case 3 -> "Nintendo Switch";
+            default -> null;
+        };
+
+        if (consoleType == null) {
+            System.out.println("Invalid console type!\n");
+            return;
+        }
+
+        System.out.print("Enter store name: ");
+        String storeName = scanner.nextLine().trim();
+
+        System.out.print("Enter city: ");
+        String city = scanner.nextLine().trim();
+
+        double total = readDouble("Enter total sales amount (R): ");
+
+        // Create Consoles object (subclass of Console) - Polymorphism
+        records.add(new Consoles(consoleType, storeName, city, total));
+        System.out.println("\nSale record added successfully!");
+    }
+
+    // ==================== FULL REPORT ====================
+    static void printFullReport() {
+        if (records.isEmpty()) {
+            System.out.println("\nNo records available.\n");
+            return;
+        }
+
+        System.out.println("\n========================================================================");
+        System.out.println("                    FULL CONSOLE SALES REPORT");
+        System.out.println("========================================================================");
+        System.out.printf("%-22s %-20s %-18s %-15s%n",
+                "CONSOLE DEVICE", "STORE NAME", "CITY", "TOTAL SALES");
+        System.out.println("------------------------------------------------------------------------");
+
+        for (Console c : records) {
+            c.printReport();     // uses the printReport method
+        }
+        System.out.println("========================================================================");
+    }
+
+    // ==================== CITY TOTALS ====================
+    static void printCityTotals() {
+        if (records.isEmpty()) {
+            System.out.println("\nNo records available.\n");
+            return;
+        }
+
+        System.out.println("\n=============================");
+        System.out.println("     TOTAL SALES PER CITY");
+        System.out.println("=============================");
+
+        ArrayList<String> cities = new ArrayList<>();
+
+        // Collect unique cities
+        for (Console c : records) {
+            if (!cities.contains(c.getCity())) {
+                cities.add(c.getCity());
+            }
+        }
+
+        double grandTotal = 0;
+
+        for (String city : cities) {
+            double cityTotal = 0;
+            for (Console c : records) {
+                if (c.getCity().equalsIgnoreCase(city)) {
+                    cityTotal += c.getTotal();
+                }
+            }
+            System.out.printf("%-20s R%,.2f%n", city, cityTotal);
+            grandTotal += cityTotal;
+        }
+
+        System.out.println("-----------------------------");
+        System.out.printf("%-20s R%,.2f%n", "GRAND TOTAL", grandTotal);
+        System.out.println("=============================");
+    }
+
+    // ==================== CONSOLE TOTALS ====================
+    static void printConsoleTotals() {
+        if (records.isEmpty()) {
+            System.out.println("\nNo records available.\n");
+            return;
+        }
+
+        System.out.println("\n============================================");
+        System.out.println("     TOTAL SALES PER CONSOLE DEVICE");
+        System.out.println("============================================");
+
+        String[] types = {
+                "PlayStation 5 (PS5)",
+                "Xbox Series X",
+                "Nintendo Switch"
+        };
+
+        double grandTotal = 0;
+
+        for (String type : types) {
+            double typeTotal = 0;
+            for (Console c : records) {
+                if (c.getConsoleType().equalsIgnoreCase(type)) {
+                    typeTotal += c.getTotal();
+                }
+            }
+            System.out.printf("%-25s R%,.2f%n", type, typeTotal);
+            grandTotal += typeTotal;
+        }
+
+        System.out.println("--------------------------------------------");
+        System.out.printf("%-25s R%,.2f%n", "GRAND TOTAL", grandTotal);
+        System.out.println("============================================");
+    }
+
+    // ==================== INPUT HELPERS ====================
+    static int readInt(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            if (scanner.hasNextInt()) {
+                int val = scanner.nextInt();
+                scanner.nextLine();
+                return val;
+            } else {
+                System.out.println("Invalid number. Try again.");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    static double readDouble(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            if (scanner.hasNextDouble()) {
+                double val = scanner.nextDouble();
+                scanner.nextLine();
+                return val;
+            } else {
+                System.out.println("Invalid amount. Try again.");
+                scanner.nextLine();
+            }
+        }
+    }
+}
