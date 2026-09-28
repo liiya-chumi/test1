@@ -1,0 +1,93 @@
+public class GamingConsoleSalesReport {
+    
+    public static void main(String[] args) {
+        // Declare and initialize sales data for each city
+        // Cape Town sales
+        int capeTownPS5 = 1000;
+        int capeTownXbox = 2000;
+        int capeTownSwitch = 3000;
+        
+        // Port Elizabeth sales
+        int portElizabethPS5 = 2000;
+        int portElizabethXbox = 3000;
+        int portElizabethSwitch = 4000;
+        
+        // Pretoria sales
+        int pretoriaPS5 = 1500;
+        int pretoriaXbox = 1100;
+        int pretoriaSwitch = 1200;
+        
+        // Calculate totals for each console type
+        int totalPS5 = capeTownPS5 + portElizabethPS5 + pretoriaPS5;
+        int totalXbox = capeTownXbox + portElizabethXbox + pretoriaXbox;
+        int totalSwitch = capeTownSwitch + portElizabethSwitch + pretoriaSwitch;
+        
+        // Calculate totals for each city
+        int capeTownTotal = capeTownPS5 + capeTownXbox + capeTownSwitch;
+        int portElizabethTotal = portElizabethPS5 + portElizabethXbox + portElizabethSwitch;
+        int pretoriaTotal = pretoriaPS5 + pretoriaXbox + pretoriaSwitch;
+        
+        // Calculate grand total
+        int grandTotal = capeTownTotal + portElizabethTotal + pretoriaTotal;
+        
+        // Display the report
+        System.out.println("=".repeat(70));
+        System.out.println("        YEARLY GAMING CONSOLE SALES REPORT - ELECTRONICS FRANCHISE");
+        System.out.println("=".repeat(70));
+        System.out.println();
+        
+        // Display header
+        System.out.printf("%-20s %12s %12s %12s %12s%n", 
+                         "CITY", "PS5", "XBOX", "SWITCH", "TOTAL");
+        System.out.println("-".repeat(70));
+        
+        // Display Cape Town sales
+        System.out.printf("%-20s %12d %12d %12d %12d%n", 
+                         "Cape Town", capeTownPS5, capeTownXbox, capeTownSwitch, capeTownTotal);
+        
+        // Display Port Elizabeth sales
+        System.out.printf("%-20s %12d %12d %12d %12d%n", 
+                         "Port Elizabeth", portElizabethPS5, portElizabethXbox, 
+                         portElizabethSwitch, portElizabethTotal);
+        
+        // Display Pretoria sales
+        System.out.printf("%-20s %12d %12d %12d %12d%n", 
+                         "Pretoria", pretoriaPS5, pretoriaXbox, 
+                         pretoriaSwitch, pretoriaTotal);
+        
+        System.out.println("-".repeat(70));
+        
+        // Display totals
+        System.out.printf("%-20s %12d %12d %12d %12d%n", 
+                         "TOTAL", totalPS5, totalXbox, totalSwitch, grandTotal);
+        
+        System.out.println("=".repeat(70));
+        System.out.println();
+        
+        // Display summary statistics
+        System.out.println("SUMMARY STATISTICS:");
+        System.out.println("-".repeat(70));
+        System.out.printf("Total PS5 Sales:     %d units%n", totalPS5);
+        System.out.printf("Total XBOX Sales:    %d units%n", totalXbox);
+        System.out.printf("Total SWITCH Sales:  %d units%n", totalSwitch);
+        System.out.printf("Grand Total Sales:   %d units%n", grandTotal);
+        System.out.println();
+        
+        // Find and display best performing city
+        String bestCity = "Cape Town";
+        int bestSales = capeTownTotal;
+        
+        if (portElizabethTotal > bestSales) {
+            bestCity = "Port Elizabeth";
+            bestSales = portElizabethTotal;
+        }
+        
+        if (pretoriaTotal > bestSales) {
+            bestCity = "Pretoria";
+            bestSales = pretoriaTotal;
+        }
+        
+        System.out.printf("Best Performing City: %s with %d total sales%n", bestCity, bestSales);
+        System.out.println("=".repeat(70));
+    }
+}
